@@ -1,0 +1,48 @@
+= "NORM DATABASE" ADD-ON for the EDI TOOLKIT for RUBY (edi4r)
+
+This is Ruby gem <b>edi4r-tdid</b> version 
+:include:VERSION
+
+It provides the full range of UN/EDIFACT Trade Data Interchance
+Directories (TDIDs) to the <b>edi4r</b> gem.
+ 
+== Installation
+
+Install it as any other Ruby gem, e.g.:
+
+  sudo gem install edi4r-tdid-<version>.gem
+
+It supplements the core <b>edi4r</b> gem. While not strictly required,
+I recommend to install <b>edi4r</b>, as there are only few people who
+would use this add-on without it.
+
+== Usage
+
+  require_gem 'edi4r-tdid'
+
+== See also
+
+* {Man page}[link:files/lib/edi4r-tdid_rb.html]. 
+
+* Documentation of the included CSV {file formats}[link:files/FileDescription.html]
+
+* The UN/EDIFACT TDID data are derived from the original 
+  UN/ECE[http://www.unece.org/trade/untdid/welcome.htm] site.
+  See LICENAGR.UNTDID[link:files/LICENAGR_UNTDID.html]
+  for UN/ECE's license details.
+
+* This code is put under the Ruby license, see COPYING[link:files/COPYING.html] for details.
+
+* Care has been taken to fix various issues in the original TDID data.
+  See MSG_ISSUES[link:files/MSG_ISSUES.html] for details about the
+  applied patches.
+
+* A ChangeLog[link:files/ChangeLog.html] will be maintained; it is just starting now.
+
+* Finally, see TO-DO[link:files/TO-DO.html] for the current wish list.
+
+:include:AuthorCopyright
+
+Enjoy,
+
+Heinz

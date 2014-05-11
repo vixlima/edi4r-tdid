@@ -1,0 +1,36 @@
+= To do
+
+[Code lists]
+  Currently, the code list directories are not made available
+
+[Syntax Version 4]
+  UN/EDIFACT syntax version 4 might have implications also on this 
+  package. Tests with SV4 will become available with general SV4
+  support in the basic edi4r gem.
+
+[More tests]
+  :-)
+
+[Adding the development environment]
+  All *.csv files in the "untdid" folder are generated from
+  the original ZIP files as distributed by UNECE (CEFACT).
+
+  Unfortunately, these ZIP files contain basically plain ASCII
+  text files intended for human use, not for machine use.
+  They come with many exceptions, idiosyncracies, and 
+  plain bugs, which considerably hamper any automatic attempt
+  to derive a structured normdata base.
+
+  A combination of filter scripts, a Makefile, and automated patches
+  was employed to get this job done. It is currently too brittle
+  for regular distribution. Let me know if you are interested
+  and/or want to contribute here.
+
+[Auto-detection of Ruby 1.9]
+  Ruby 1.9 must be run with option -E ISO-8859-1, while Ruby 1.8
+  must NOT receive this option. Makefiles should detect the installed
+  version of Ruby and adjust calls automatically, while today they
+  need to be patched manually.
+
+[Rakefile]
+  Abandon make, use rake instead

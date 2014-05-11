@@ -1,0 +1,57 @@
+= Change log
+
+== 0.8.1
+Fixed file access permission issues
+
+== 0.8.0
+Now including all directories up to D.10B
+
+Support for Ruby 1.9 added.
+
+== 0.6.5
+Now including D.08A, D.07B
+
+== 0.6.4
+Now including D.06A, D.06B, D.07A
+
+== 0.6.3.1
+Bug fix for Windows implementation of class "Pathname".
+
+== 0.6.3
+New test (test_segments.rb) which actually loads all segments of
+all message types, thus applying more tests to the CSV files.
+
+This test discovered a new bug. This was fixed in CDE_filter.rb and
+seg_filter.rb. Now some previously missing segments and CDEs at the beginning
+of files ED[CS]D.*.csv are included.
+
+The new test also searches for "distant duplicates", i.e. (C)DE of the
+same name in a single segment, but with some other entity in between.
+Many such occurrences are found in some early release - please ignore.
+
+Note that the search for distant DE duplicates within CDEs is 
+commented out: There are many such cases, it appears to be a
+frequent feature of UN/EDIFACT CDEs. Ex.: 3055, 1131 in C088, C243;
+5275 in C203; 7064, 7143 in C402.
+Keep the existance of such distant duplicates in mind when accessing
+them through method a3055 and such: Though you get all occurrences back
+as an array, remember that they are not adjacent.
+
+== 0.6.2
+Description of CSV files now included
+
+== 0.6.1
+Issues in UN/TDID messages patched and reported to UN/ECE
+Test code adapted to edi4r >= 0.9.1
+
+== 0.6.0
+=== First release as a gem
+* Split from the edi4r core package, turned into a separate one.
+* Diagram test (unit test) added, resulting issues fixed
+* RDoc documentation added
+* Modular loading scheme for normdata added (through EDI_NDB_PATH)
+* Rolled into a gem
+
+== pre-0.6.0
+* Used internally for projects and teaching, as part of "edi4r"
+

@@ -1,0 +1,47 @@
+= Message issues
+
+All warnings produced by the filters have carefully been
+traced to their sources and found harmless.
+
+Some errors occurred both during data extraction from the
+UN/ECE sources and during diagram tests. The affected
+sources and/or the resulting csv files have been patched,
+and the issues reported to UN/ECE.
+
+Depending upon verification by the directory maintainers,
+these patches will remain in place or be undone.
+
+I'd say that all *known* issues have been properly accounted for.
+
+== Recommendations
+
+* When in doubt, double-check the supplied message structures
+  with the UN sources if you happen to need one of the
+  patched messages.
+* Patch the *.csv files if you really want to revert to the
+  original values.
+* Let me know if you find other issues!
+
+== List of known/fixed issues
+
+* 90.1 (*.1901.csv): No real source available, just copies of 90.2
+* DOCAPP:1:911:UN: Fixed
+* IFCSUM, SG31, 91.1 and 93.2
+    Segment GID: Status is "C", patched to "M"
+* INVOIC, SG45, 91.1 and 93.2
+    Segment RFF: Status is "C", patched to "M"
+* SANCRT, SG5, D.93A and D.94A and D.94B
+    Segment PAC: Max. Rep. is "9", patched to "1"
+* QALITY, SG32, 93.2
+    Segment CCI: Max. Rep. is "10", patched to "1"
+* CUSEXP, SG9, D.94B
+    Segment PCI: Status is "C", patched to "M"
+* DESTIM, SG10, D.96B and D.97A and D.97B
+    Segment NAD: Max. Rep. is "9", patched to "1"
+* REMADV, D.94B
+    Segment NAD: Max. Rep. is "99", patched to "1"
+* REMADV, main branch, D.94B
+    Segment group SG1: Max. Rep. is "5", patched to "99"
+* RESREQ:D:96B:UN: There should be no such message type - skipped!
+* BOPBNK:D:99B:UN: Fixed
+* GOVCBR:D:09A:UN: Fixed according to UN/ECE news dated Nov. 8, 2009

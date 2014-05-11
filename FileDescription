@@ -1,0 +1,277 @@
+= Description of the included CSV files
+
+== Directory structure
+
+[<tt>./data</tt>]
+  Base directory for all format descriptions
+
+[<tt>./data/edifact</tt>]
+  Keeps descriptions of ISO 9735 and TDIDs as well as subsets
+
+[<tt>./data/edifact/iso9735</tt>]
+  Descriptions of EDIFACT syntax versions 1-4: Service segments
+  and their composites and data elements, messages types
+  included at the syntax level (CONTRL, AUTACK, etc.)
+
+  These data are included in the base gem "edi4r"!
+
+[<tt>./data/edifact/untdid</tt>]
+  Descriptions of all available UN Trade Data Interchange Directories. 
+  Main topic of this gem!
+
+== File naming convention (in .../untdid)
+<i>b</i>D<i>t</i>D.<i>vrrr</i>.csv
+
+=== <i>b</i>: Batch or general vs. Interactive EDI
+<i>b</i>=E::  General or batch EDI
+<i>b</i>=I::  Interactive EDI only
+
+=== <i>t</i>: Type of directory
+<i>t</i>=M::  Message directory
+<i>t</i>=S::  Segment directory
+<i>t</i>=C::  Composite data element directory
+<i>t</i>=D::  Data element directory
+
+=== <i>v</i>: Version of directory
+1:: Indicates 90.1, 90.2, 91.1, or 92.1
+2:: Only 93.2
+s:: Only S.93A
+d:: all others
+
+This value is typically mapped to DE 0052 of S009 or S306
+
+=== <i>rrr</i>: Release of directory
+* Examples: 911 (for 91.1), 93a (D93.A, S93.A), 05b (D.05B)
+* This value is typically mapped to DE 0054 of S009 or S306
+
+=== Examples:
+EDCD.1911.csv:: The composite data element directory of version/release 91.1
+EDSD.d93a.csv:: The segment directory of D.93A
+IDMD.d05b.csv:: The part of message directory of D.05B containing the interactive EDI messages
+
+== Common data structure
+
+* Each record is a single line in CSV format, with ';' as separator character
+* Values are given in plain ASCII and are not quoted
+* We assume that the separator character is  never used as a regular content
+  character. Hence, there is no need for character escaping, 
+  and none is provided.
+
+== Code list directory
+
+(sorry - this version does not include the code lists yet)
+
+
+== Data element directory
+
+A data element record is a simple sequence of 4 fields.
+
+[Sample record]
+  <tt>1131;an..3;C;Code list qualifier</tt>
+
+[Field 1, e.g. <tt>1131</tt>]
+  Tag of data element, always a 4-digit number.
+
+[Field 2, e.g. <tt>an..3</tt>]
+  Representation of the data element.
+
+[Field 3, e.g. <tt>C</tt>]
+  Usage indicator. 
+  B:: Used in batch messages only
+  I:: Used in interactive messages only
+  C:: Common usage in both batch and interactive messages
+  Note: 'C' is also provided for the directories without interactive messages
+
+[Field 4, e.g. <tt>Code list qualifier</tt>]
+  The data element name.
+  Note that the usually longer 'description' text is not provided here.
+
+
+== Composite data element directory
+
+A composite data element record consists of two header fields and a
+variable number of field groups, each of which describing one
+component data element of the composite.
+
+Each field group consists of 4 fields. Header fields and field groups
+may be identified simply by counting the fields - they are not
+distinguished by e.g. a different separator character.
+
+Each composite data element contains at least one such field group
+(or else it would be useless), so a composite record consists of
+2 + 4*n fields, with n >= 1.
+
+[Sample record]
+  <tt>C107;TEXT REFERENCE;010;4441;M;an..17;020;1131;C;an..17;030;3055;C;an..3;</tt>
+
+[Field 1, e.g. <tt>C107</tt>]
+  Tag of composite data element, always a character followed by a 
+  3-digit number. Generally, the leading character is 'E' for a composite 
+  used by interactive EDI segments, 'C' in the normal case, or 'S'
+  for service composites (provided by ISO 9735, not by the TDIDs).
+
+[Field 2, e.g. <tt>TEXT REFERENCE</tt>]
+  The composite data element name.
+  Note that the usually longer 'description' text is not provided here.
+
+[Component element field group, e.g. <tt>010;4441;M;an..17;</tt>]
+  There is one field group for each component data element.
+  Each field group comprises 4 sub-fields:
+  [Sub-field 1]
+    Sequence number of component, e.g. <tt>010</tt>
+    Always a 3-digit number. It is counted up in increments of 10 and
+    indicates the position of the component in the composite.
+    Note that sequence numbers are missing in the older UN/TDIDs, and that
+    this package adds them where missing simply by counting the components
+    in their documented sequence of occurrence.
+  [Sub-field 2]
+    Component data element tag, e.g. <tt>4441</tt>
+  [Sub-field 3]
+    Component data element status, e.g. <tt>M</tt>
+    For plain EDIFACT, only 'M' (mandatory) or 'C' occur.
+    Some subsets add other values here.
+  [Sub-field 4]
+    Component data element representation, e.g. <tt>an..17</tt>.
+    This field should match the corresponding value of this data element
+    as stated in the Data Element Directory.
+
+
+== Segment directory
+
+A segment record consists of two header fields and a
+variable number of field groups, each of which describing one
+included composite or simple data element.
+
+Each field group consists of 4 fields. Header fields and field groups
+may be identified simply by counting the fields - they are not
+distinguished by e.g. a different separator character.
+
+Each segment contains at least one such field group
+(or else it would be useless), so a segment record consists of
+2 + 4*n fields, with n >= 1.
+
+[Sample records]
+  <tt>DTM;DATE/TIME/PERIOD;010;C507;M;1;</tt>
+  <tt>BGM;BEGINNING OF MESSAGE;010;C002;C;1;020;C106;C;1;030;1225;C;1;040;4343;C;1;</tt>
+
+[Field 1, e.g. <tt>DTM</tt>]
+  Segment tag, always a 3-character string. Note that service segments
+  (those whose tags start with 'U') are provided by ISO 9735, not by the TDIDs.
+
+[Field 2, e.g. <tt>DATE/TIME/PERIOD</tt>]
+  The segment element name.
+  Note that the usually more explicit 'description' text is not provided here.
+
+[Data element field group, e.g. <tt>010;C507;M;1;</tt>]
+  There is one field group for each included (composite or plain) data element.
+  Each field group comprises 4 sub-fields:
+  [Sub-field 1]
+    Sequence number of component, e.g. <tt>010</tt>, always a 3-digit number. 
+    It is counted up in increments of 10 and indicates the position of the 
+    component in the composite.
+
+    Note that sequence numbers are missing in the older UN/TDIDs, and that
+    this package adds them where missing simply by counting the components
+    in their documented sequence of occurrence.
+  [Sub-field 2]
+    Data element tag, e.g. <tt>C507</tt> or <tt>1225</tt>.
+    This is a reference to the corresponding composite or data element
+    directory.
+  [Sub-field 3]
+    Data element status, e.g. <tt>M</tt>
+    For plain EDIFACT, only 'M' (mandatory) or 'C' occur.
+    Some subsets add other values here.
+  [Sub-field 4]
+    Data element repetition, in most cases <tt>1</tt>.
+    The ability to repeat data elements or composites within segments
+    is a feature introduced by syntax version 4 and so far is rarely used.
+    A value of '1' is added by this package to older releases which
+    did not yet provide it.
+
+
+== Message directory
+
+Basically, a message consists of a linear sequence of segments or 
+segment groups. Segment groups, however, may contain other segment groups
+(in a non-recursive manner), and thus a message is a tree-like 
+(hierarchical) structure - with a main trunk and branches.
+Each branch may be regarded as another trunk with optional branches.
+
+We describe a message by listing all of its branches, including
+the main branch (trunk), by supplying <b>one record for each branch</b>
+(segment group) of a message.
+
+The trunk record contains the message description, but no segment group name.
+Records of dependent branches contain a dummy text (usually the simplified
+segment group name) in the description field and their formal segment group 
+name, by which they are referenced from higher-level branches.
+
+Each message branch record consists of two header fields and a
+variable number of field groups, each of which describing one
+included segment or segment group.
+
+Each field group consists of 3 fields. Header fields and field groups
+may be identified simply by counting the fields - they are not
+distinguished by e.g. a different separator character. However,
+the first header field contains sub-fields which are separated
+by the ':' character (UNH style).
+
+Each message record contains at least one such field group
+(or else it would be useless), so a message record consists of
+2 + 3*n fields, with n >= 1.
+
+
+[Sample records]
+  <tt>BANSTA:D:93A:UN::;BANKING STATUS MESSAGE;UNH;M;1;SG1;M;1;SG2;M;2;SG3;C;5;SG4;C;99;SG8;C;1;UNT;M;1</tt>
+  <tt>BANSTA:D:93A:UN::SG6;SG06;GIS;M;1;DTM;C;1;SG7;C;99</tt>
+  <tt>BANSTA:D:93A:UN::SG7;SG07;ERC;M;1;FTX;C;5;DOC;C;5</tt>
+
+[Field 1, e.g. <tt>BANSTA:D:93A:UN::</tt> or <tt>BANSTA:D:93A:UN::SG06</tt>]
+  This is the selector field. It uniquely identifies the branch described
+  by the following fields. In combination, the 6 sub-fields form 
+  a unique lookup key:
+
+  [Sub-field 1, e.g. <tt>BANSTA</tt>]
+    Message name, always a 6-character string. Note that service messages
+    (e.g. 'CONTRL') are provided by ISO 9735, not by the TDIDs.
+
+  [Sub-field 2, e.g. <tt>D</tt>]
+    The message version, one of '1', '2', 'S', 'D'; cf. DE 0052.
+
+  [Sub-field 3, e.g. <tt>93A</tt>]
+    The message release, cf. DE 0054.
+
+  [Sub-field 4, e.g. <tt>UN</tt>]
+    The responsible agency (of this message); cf. DE 0051.
+
+  [Sub-field 5, empty for plain EDIFACT, but used by subsets (SV 1-3)]
+    The association assigned code, e.g. <tt>EAN008</tt> for subset EANCOM.
+
+  [Sub-field 6, e.g. <tt>SG7</tt> or empty]
+  The branch name; empty for the main trunk.
+
+[Field 2, e.g. <tt>SG07</tt>]
+  The message description, e.g. <tt>BANKING STATUS MESSAGE</tt>, 
+  or <tt>SG07</tt>. The description text for the main trunk is obtained 
+  from the title of the corresponding UN/EDIFACT message type description.
+  For depending branches, this text equals prefix 'SG' appended
+  by the 2-digit segment group number.
+
+[Segment field group, e.g. <tt>GIS;M;1;DTM;C;1;SG7;C;99</tt>]
+  There is one field group for each included segment or segment group.
+  Each field group comprises 3 sub-fields:
+  [Sub-field 1]
+    The segment tag or branch name, e.g. <tt>GIS</tt> or <tt>SG7</tt>.
+    In contrast to the description text, branch names (of segment groups)
+    do not include leading zeroes.
+  [Sub-field 3]
+    Segment or segment group status, e.g. <tt>M</tt>
+    For plain EDIFACT, only 'M' (mandatory) or 'C' occur.
+    Some subsets add other values here.
+  [Sub-field 4]
+    Segment or segment group repetition indicator.
+
+  Note: EDIFACT rules assign a level to each segment of a message type.
+  While this level usally reflects the hierarchy, level '0' comprises
+  an exception: Segments of the main trunk with status=='M' and
+  max. repetition=='1' belong to level 0, all others to higher levels.
